@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateElectionsTable extends Migration
+class CreateCitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,15 @@ class CreateElectionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('elections', function (Blueprint $table) {
+        Schema::create('cities', function (Blueprint $table) {
             $table->id();
+            $table->string('name');
+            $table->Integer('cd_city');
+            $table->Integer('cdi_city');
             $table->foreignId('state_id')
                 ->constrained('states')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->float('percentage');
-            $table->date('lastUpdateDate');
-            $table->time('lastUpdateTime');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,6 +34,6 @@ class CreateElectionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('elections');
+        Schema::dropIfExists('cities');
     }
 }

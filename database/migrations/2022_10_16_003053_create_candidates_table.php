@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateElectionsTable extends Migration
+class CreateCandidatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,13 @@ class CreateElectionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('elections', function (Blueprint $table) {
+        Schema::create('candidates', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('state_id')
-                ->constrained('states')
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
-            $table->float('percentage');
-            $table->date('lastUpdateDate');
-            $table->time('lastUpdateTime');
+            $table->bigInteger('candidate_id');
+            $table->string('display_name');
+            $table->integer('number');
+            $table->string('name');
+            $table->string('affiliated_name');
             $table->timestamps();
             $table->softDeletes();
         });
@@ -34,6 +32,6 @@ class CreateElectionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('elections');
+        Schema::dropIfExists('candidates');
     }
 }

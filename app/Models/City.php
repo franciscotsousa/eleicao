@@ -6,14 +6,20 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class State extends Model
+class City extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
-    public function cities()
+
+    public function state()
     {
-        return $this->hasMany(City::class);
+        return $this->belongsTo(State::class);
+    }
+
+    public function zones()
+    {
+        return $this->hasMany(Zone::class);
     }
 }

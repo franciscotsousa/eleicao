@@ -16,6 +16,9 @@ class CreateStatesTable extends Migration
         Schema::create('states', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('cd_state');
+            $table->boolean('second_governor');
+            $table->boolean('second_senator');
             $table->timestamps();
             $table->softDeletes();
         });
