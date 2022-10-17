@@ -32,18 +32,55 @@ class Position extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
+        $urlBase = Env::get('URL_BASE_CONTAS');
 
-        $url = Env::get('URL_BASE_CONTAS') . "eleicao/listar/municipios/2040602022/SP/cargos";
+        $states = \App\Models\State::query()
+            ->whereNotIn('cd_state', ['BR', 'ZZ'])
+            ->get();
 
-        $response = Http::get($url)->json();
+        \App\Models\Position::create([
+            'name' => 'Presidente',
+            'cd_position' => 1,
+        ]);
 
-        dd($response);
+        \App\Models\Position::create([
+            'name' => 'Vide-presidente',
+            'cd_position' => 2,
+        ]);
+
+        foreach ($states as $state) {
+            $endPoint = "eleicao/listar/municipios/2040602022/$state->cd_state/cargos";
+
+            $response = Http::withHeaders([
+                'Accept' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8',
+                'Accept-Encoding' => 'gzip, deflate, br',
+                'Connection' => 'keep-alive',
+                'Host' => 'divulgacandcontas.tse.jus.br',
+                'User-Agent' => Env::get('APP_NAME'),
+            ])
+                ->get($urlBase . $endPoint)
+                ->json('cargos');
+
+            foreach ($response as $value)
+            {
+                $payload[] =[
+                    'nome' => $value['nome'],
+                    'codigo' => $value['codigo'],
+                ];
+            }
+        }
+
+        foreach (collect($payload)->unique() as $value) {
+
+            \App\Models\Position::create([
+                'name' => $value['nome'],
+                'cd_position' => $value['codigo'],
+            ]);
+        }
+        print 'Importação realizada com sucesso!' . PHP_EOL;
+
+        return 0;
     }
 }

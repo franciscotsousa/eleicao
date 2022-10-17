@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Config;
+use App\Models\State;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -12,7 +14,7 @@ class Election extends Command
      *
      * @var string
      */
-    protected $signature = 'el:load';
+    protected $signature = 'el:election {id}';
 
     /**
      * The console command description.
@@ -31,30 +33,33 @@ class Election extends Command
         parent::__construct();
     }
 
-
     public function handle()
     {
-        foreach (\App\Models\Election::ESTADOS as $estado)
+        $config = Config::find($this->argument('id'));
+
+        if ($config->ordinary == 545 || $config->ordinary == 547) {
+            $states = State::query()
+                ->where('second_governor', true)
+                ->get();
+        }
+        else
         {
-            $state = mb_strtolower($estado);
+            $states = State::query()
+                ->get();
+        }
 
-            $url = "https://resultados.tse.jus.br/oficial/ele2022/544/dados/$state/$state-c0001-e000544-v.json";
+        foreach ($states as $item) {
+            $state = mb_strtolower($item->cd_state);
 
-            $response = Http::get($url)->json();
+            $url = "https://resultados.tse.jus.br/oficial/ele2022/$config->ordinary/dados/$state/$state-c0001-e000$config->ordinary-v.json";
 
-            foreach ($response as $resp)
-            {
-                if(gettype($resp) == 'array')
-                {
-                    foreach ($resp as $abr)
-                    {
-                        echo $abr["cdabr"] . ";"; //State
-                        echo $abr["pst"] . ';'; //Percentege
-                        echo $abr["dt"] . ';'; //Last Update Date
-                        echo $abr["ht"] . PHP_EOL; //Last Update Time
-                    }
-                }
-            }
+            $response = Http::get($url)->json('abr');
+
+            echo $response[0]["cdabr"] . " - "; //State
+            echo $response[0]["pst"] . " - "; //Percentege
+            echo $response[0]["dt"] . " - "; //Last Update Date
+            echo $response[0]["ht"] . PHP_EOL; //Last Update Hour
+
         }
     }
 }

@@ -40,6 +40,16 @@ class State extends Command
      */
     public function handle()
     {
+        $secondGovernor = array('AL','AM','SC','SE','BA','ES','MS','PB','PE','RS','RR','SP');
+        $secondSenator = array('AL','AM','SC','SE','RO');
+
+        States::create([
+            'name' => 'Brasil',
+            'cd_state' => 'BR',
+            'second_governor' => false,
+            'second_senator' => false,
+        ]);
+
         $url = 'https://resultados.tse.jus.br/oficial/ele2022/545/config/mun-e000545-cm.json';
 
         $response = Http::get($url)->json();
@@ -48,15 +58,18 @@ class State extends Command
         {
             foreach ($response['abr'] as $state)
             {
-
                 States::create([
                     'name' => $state['ds'],
                     'cd_state' => $state['cd'],
-                    'second_governor' => false,
-                    'second_senator' => false,
+                    'second_governor' => in_array($state['cd'], $secondGovernor),
+                    'second_senator' => in_array($state['cd'], $secondSenator),
                     ]);
             }
         }
+
+        print 'Importação realizada com sucesso!' . PHP_EOL;
         return 0;
     }
+
+
 }

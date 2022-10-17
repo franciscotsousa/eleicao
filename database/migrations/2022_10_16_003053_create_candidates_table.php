@@ -15,6 +15,14 @@ class CreateCandidatesTable extends Migration
     {
         Schema::create('candidates', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('state_id')
+                ->constrained('states')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
+            $table->foreignId('position_id')
+                ->constrained('positions')
+                ->cascadeOnUpdate()
+                ->cascadeOnDelete();
             $table->bigInteger('candidate_id');
             $table->string('display_name');
             $table->integer('number');

@@ -31,11 +31,6 @@ class Zone extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
         $url = 'https://resultados.tse.jus.br/oficial/ele2022/545/config/mun-e000545-cm.json';
@@ -55,11 +50,11 @@ class Zone extends Command
                     $city[0]->zones()->create([
                         'cd_zone' => $item
                     ]);
-
-                    print $items['nm'] . ' - ' . $item . PHP_EOL;
                 }
             }
         }
+        print 'Importação realizada com sucesso!' . PHP_EOL;
+
         return 0;
     }
 }

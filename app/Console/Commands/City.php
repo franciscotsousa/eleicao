@@ -2,8 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Models\City as Cities;
-use \App\Models\State;
+use App\Models\State;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 
@@ -38,7 +37,7 @@ class City extends Command
      *
      * @return int
      */
-    public function handle()
+    public function handle() : int
     {
         $url = 'https://resultados.tse.jus.br/oficial/ele2022/545/config/mun-e000545-cm.json';
 
@@ -59,6 +58,8 @@ class City extends Command
                 ]);
             }
         }
+
+        print 'Importação realizada com sucesso!' . PHP_EOL;
 
         return 0;
     }
