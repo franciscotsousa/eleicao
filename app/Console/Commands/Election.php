@@ -55,6 +55,8 @@ class Election extends Command
 
             $response = Http::get($url)->json('abr');
 
+            dd($response);
+
             echo $response[0]["cdabr"] . " - "; //State
             echo $response[0]["pst"] . " - "; //Percentege
             echo $response[0]["dt"] . " - "; //Last Update Date
